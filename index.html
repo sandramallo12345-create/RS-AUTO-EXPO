@@ -32,7 +32,6 @@
         <!-- HEADER SECTION -->
         <div class="p-8 md:p-12 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start gap-8">
             <div class="flex flex-col md:flex-row items-center gap-6">
-                <!-- LOGO CONTAINER -->
                 <div class="relative group">
                     <div class="bg-white p-2 rounded-2xl shadow-sm border border-slate-100 w-32 h-32 flex items-center justify-center overflow-hidden">
                         <img id="logoPreview" src="" alt="Logo" class="hidden w-full h-full object-contain">
@@ -50,7 +49,6 @@
                 </div>
             </div>
             
-            <!-- CUSTOMER INFO (Updated with your provided details) -->
             <div class="bg-blue-50/50 p-8 rounded-[1.5rem] border-l-[6px] border-[#001F3F] w-full md:w-96">
                 <p class="font-black text-slate-900 text-xl uppercase mb-1">MARKETING AND SALES SERVICES</p>
                 <p class="text-slate-600 text-[10px] font-bold uppercase leading-tight">C/1263 GBEDJROMEDE<br>COTONOU, Benin</p>
@@ -105,8 +103,6 @@
 
         <!-- CONTENT -->
         <div class="p-8 md:p-12 space-y-16">
-            
-            <!-- VEHICLE TABLE -->
             <section>
                 <div class="flex items-center gap-4 mb-6">
                     <div class="h-8 w-1 navy-bg rounded-full"></div>
@@ -130,7 +126,6 @@
                 </div>
             </section>
 
-            <!-- WIRE TABLE -->
             <section class="max-w-4xl">
                 <div class="flex items-center gap-4 mb-6">
                     <div class="h-8 w-1 bg-blue-500 rounded-full"></div>
@@ -150,7 +145,6 @@
                     </table>
                 </div>
             </section>
-
         </div>
 
         <div class="p-8 bg-slate-50 text-center border-t border-slate-100">
@@ -159,8 +153,8 @@
     </div>
 
     <script>
-        // Unique storage key for this specific client
         const storageKey = 'rs_marketing_benin_ledger_v1';
+        const curFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 
         let state = JSON.parse(localStorage.getItem(storageKey)) || {
             cars: [{ year: '', model: '', vin: '', price: 0, status: 'UNPAID' }],
@@ -168,9 +162,32 @@
             logo: null
         };
 
-        function save() {
+        function saveState() {
             localStorage.setItem(storageKey, JSON.stringify(state));
-            render();
+        }
+
+        function calculateTotals() {
+            let invTotal = 0;
+            let wireTotal = 0;
+
+            // Calculate Inventory and update row totals
+            const carRows = document.querySelectorAll('#carTable tr');
+            state.cars.forEach((c, i) => {
+                const rem = c.status === 'PAID' ? 0 : (c.price || 0);
+                invTotal += rem;
+                if (carRows[i]) {
+                    carRows[i].querySelector('.row-rem').innerText = curFormatter.format(rem);
+                }
+            });
+
+            // Calculate Wires
+            state.wires.forEach(w => {
+                wireTotal += (w.amount || 0);
+            });
+
+            document.getElementById('totalInv').innerText = curFormatter.format(invTotal);
+            document.getElementById('totalWire').innerText = curFormatter.format(wireTotal);
+            document.getElementById('totalBal').innerText = curFormatter.format(invTotal - wireTotal);
         }
 
         function handleLogo(input) {
@@ -178,27 +195,34 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     state.logo = e.target.result;
-                    save();
+                    const img = document.getElementById('logoPreview');
+                    img.src = state.logo;
+                    img.classList.remove('hidden');
+                    document.getElementById('logoPlaceholder').classList.add('hidden');
+                    saveState();
                 };
                 reader.readAsDataURL(input.files[0]);
             }
         }
 
+        function updateField(type, index, key, val) {
+            state[type][index][key] = (key === 'price' || key === 'amount') ? parseFloat(val) || 0 : val;
+            saveState();
+            calculateTotals();
+        }
+
         function addRow(type) {
             if (type === 'cars') state.cars.push({ year: '', model: '', vin: '', price: 0, status: 'UNPAID' });
             else state.wires.push({ date: '', ref: 'Wire Transfer', amount: 0 });
-            save();
+            saveState();
+            fullRender();
         }
 
-        function update(type, index, key, val) {
-            state[type][index][key] = (key === 'price' || key === 'amount') ? parseFloat(val) || 0 : val;
-            save();
-        }
-
-        function remove(type, index) {
+        function removeRow(type, index) {
             if(confirm('Delete entry?')) {
                 state[type].splice(index, 1);
-                save();
+                saveState();
+                fullRender();
             }
         }
 
@@ -210,61 +234,56 @@
             dl.click();
         }
 
-        function render() {
-            const cur = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
-            
-            const img = document.getElementById('logoPreview');
-            const placeholder = document.getElementById('logoPlaceholder');
-            if(state.logo) {
-                img.src = state.logo;
-                img.classList.remove('hidden');
-                placeholder.classList.add('hidden');
-            }
-
+        function fullRender() {
             const cBody = document.getElementById('carTable');
             const wBody = document.getElementById('wireTable');
-            cBody.innerHTML = ''; wBody.innerHTML = '';
+            cBody.innerHTML = ''; 
+            wBody.innerHTML = '';
             
-            let invTotal = 0; let wireTotal = 0;
+            // Logo Logic
+            if(state.logo) {
+                const img = document.getElementById('logoPreview');
+                img.src = state.logo;
+                img.classList.remove('hidden');
+                document.getElementById('logoPlaceholder').classList.add('hidden');
+            }
 
             state.cars.forEach((c, i) => {
-                const rem = c.status === 'PAID' ? 0 : (c.price || 0);
-                invTotal += rem;
-                cBody.innerHTML += `
-                    <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="p-4 pl-6"><input type="text" value="${c.year || ''}" oninput="update('cars',${i},'year',this.value)" placeholder="2024" class="font-bold text-slate-700"></td>
-                        <td class="p-4"><input type="text" value="${c.model || ''}" oninput="update('cars',${i},'model',this.value)" placeholder="Make / Model" class="font-bold text-slate-700"></td>
-                        <td class="p-4"><input type="text" value="${c.vin || ''}" oninput="update('cars',${i},'vin',this.value)" placeholder="VIN #" class="font-medium text-slate-500 uppercase text-xs"></td>
-                        <td class="p-4"><input type="number" value="${c.price || 0}" oninput="update('cars',${i},'price',this.value)" class="font-black text-slate-900"></td>
-                        <td class="p-4">
-                            <select onchange="update('cars',${i},'status',this.value)" class="text-[10px] font-black p-2 rounded-lg outline-none cursor-pointer ${c.status === 'PAID' ? 'status-paid' : 'status-unpaid'}">
-                                <option value="UNPAID" ${c.status === 'UNPAID' ? 'selected' : ''}>UNPAID</option>
-                                <option value="PAID" ${c.status === 'PAID' ? 'selected' : ''}>PAID</option>
-                            </select>
-                        </td>
-                        <td class="p-4 text-right pr-6 font-black text-xl text-slate-900">${cur.format(rem)}</td>
-                        <td class="p-4 no-print text-center"><button onclick="remove('cars',${i})" class="text-slate-300 hover:text-red-500">✕</button></td>
-                    </tr>
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition-colors";
+                tr.innerHTML = `
+                    <td class="p-4 pl-6"><input type="text" value="${c.year}" oninput="updateField('cars',${i},'year',this.value)" placeholder="2024" class="font-bold text-slate-700"></td>
+                    <td class="p-4"><input type="text" value="${c.model}" oninput="updateField('cars',${i},'model',this.value)" placeholder="Make / Model" class="font-bold text-slate-700"></td>
+                    <td class="p-4"><input type="text" value="${c.vin}" oninput="updateField('cars',${i},'vin',this.value)" placeholder="VIN #" class="font-medium text-slate-500 uppercase text-xs"></td>
+                    <td class="p-4"><input type="number" value="${c.price}" oninput="updateField('cars',${i},'price',this.value)" class="font-black text-slate-900"></td>
+                    <td class="p-4">
+                        <select onchange="this.className = 'text-[10px] font-black p-2 rounded-lg outline-none cursor-pointer ' + (this.value === 'PAID' ? 'status-paid' : 'status-unpaid'); updateField('cars',${i},'status',this.value)" class="text-[10px] font-black p-2 rounded-lg outline-none cursor-pointer ${c.status === 'PAID' ? 'status-paid' : 'status-unpaid'}">
+                            <option value="UNPAID" ${c.status === 'UNPAID' ? 'selected' : ''}>UNPAID</option>
+                            <option value="PAID" ${c.status === 'PAID' ? 'selected' : ''}>PAID</option>
+                        </select>
+                    </td>
+                    <td class="p-4 text-right pr-6 font-black text-xl text-slate-900 row-rem">${curFormatter.format(c.status === 'PAID' ? 0 : c.price)}</td>
+                    <td class="p-4 no-print text-center"><button onclick="removeRow('cars',${i})" class="text-slate-300 hover:text-red-500">✕</button></td>
                 `;
+                cBody.appendChild(tr);
             });
 
             state.wires.forEach((w, i) => {
-                wireTotal += (w.amount || 0);
-                wBody.innerHTML += `
-                    <tr class="hover:bg-blue-50/50 transition-colors">
-                        <td class="p-5 pl-6"><input type="date" value="${w.date || ''}" oninput="update('wires',${i},'date',this.value)" class="text-xs font-bold text-slate-500"></td>
-                        <td class="p-5"><input type="text" value="${w.ref || ''}" oninput="update('wires',${i},'ref',this.value)" placeholder="Reference" class="font-medium text-slate-700"></td>
-                        <td class="p-5 text-right pr-6 font-black text-blue-600 text-xl">${cur.format(w.amount || 0)}</td>
-                        <td class="p-5 no-print text-center"><button onclick="remove('wires',${i})" class="text-slate-300 hover:text-red-500">✕</button></td>
-                    </tr>
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-blue-50/50 transition-colors";
+                tr.innerHTML = `
+                    <td class="p-5 pl-6"><input type="date" value="${w.date}" oninput="updateField('wires',${i},'date',this.value)" class="text-xs font-bold text-slate-500"></td>
+                    <td class="p-5"><input type="text" value="${w.ref}" oninput="updateField('wires',${i},'ref',this.value)" placeholder="Reference" class="font-medium text-slate-700"></td>
+                    <td class="p-5 text-right pr-6 font-black text-blue-600 text-xl"><input type="number" value="${w.amount}" oninput="updateField('wires',${i},'amount',this.value)" class="text-right"></td>
+                    <td class="p-5 no-print text-center"><button onclick="removeRow('wires',${i})" class="text-slate-300 hover:text-red-500">✕</button></td>
                 `;
+                wBody.appendChild(tr);
             });
 
-            document.getElementById('totalInv').innerText = cur.format(invTotal);
-            document.getElementById('totalWire').innerText = cur.format(wireTotal);
-            document.getElementById('totalBal').innerText = cur.format(invTotal - wireTotal);
+            calculateTotals();
         }
-        render();
+
+        fullRender();
     </script>
 </body>
 </html>
