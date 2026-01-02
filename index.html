@@ -25,20 +25,18 @@
             .print-text { 
                 display: block !important; 
                 min-height: 1.2em;
-                white-space: nowrap; /* Forces horizontal display */
                 overflow: visible;
-                font-size: 10pt !important;
+                font-size: 9pt !important;
                 color: #000 !important;
+                word-break: break-all; /* Prevent VIN from pushing table width */
             }
 
-            /* Ensure table cells expand for VINs */
-            th:nth-child(3), td:nth-child(3) {
-                min-width: 180px !important;
-            }
-            
             .status-paid { background-color: #dcfce7 !important; color: #15803d !important; -webkit-print-color-adjust: exact; }
             .status-unpaid { background-color: #fee2e2 !important; color: #b91c1c !important; -webkit-print-color-adjust: exact; }
             .navy-bg { background-color: #001F3F !important; -webkit-print-color-adjust: exact; }
+            
+            table { table-layout: auto !important; width: 100% !important; }
+            th, td { padding: 4px !important; }
         }
 
         .status-paid { background-color: #dcfce7; color: #15803d; font-weight: 900; }
@@ -46,142 +44,130 @@
         
         input { background: transparent; outline: none; width: 100%; border-bottom: 1px solid transparent; transition: border 0.2s; }
         input:focus { border-bottom: 1px solid #cbd5e1; }
-        input::placeholder { color: #cbd5e1; font-weight: 400; font-size: 0.8rem; }
+        input::placeholder { color: #cbd5e1; font-weight: 400; font-size: 0.75rem; }
+
+        /* Force table containment */
+        .table-container {
+            width: 100%;
+            overflow-x: hidden; /* No horizontal scroll */
+        }
+        table {
+            width: 100%;
+            table-layout: fixed; /* Ensures column widths are strictly obeyed */
+        }
     </style>
 </head>
-<body class="p-2 md:p-8">
+<body class="p-2 md:p-6">
 
-    <div class="max-w-7xl mx-auto bg-white shadow-2xl rounded-[2rem] overflow-hidden border border-slate-200 container-box">
+    <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-[1.5rem] overflow-hidden border border-slate-200 container-box">
         
         <!-- HEADER SECTION -->
-        <div class="p-8 md:p-12 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start gap-8">
+        <div class="p-6 md:p-10 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start gap-6">
             <div class="flex flex-col md:flex-row items-center gap-6">
-                <div class="relative group">
-                    <div class="bg-white p-2 rounded-2xl shadow-sm border border-slate-100 w-32 h-32 flex items-center justify-center overflow-hidden">
+                <div class="relative group no-print">
+                    <div class="bg-white p-2 rounded-xl shadow-sm border border-slate-100 w-24 h-24 flex items-center justify-center overflow-hidden">
                         <img id="logoPreview" src="" alt="Logo" class="hidden w-full h-full object-contain">
-                        <div id="logoPlaceholder" class="text-center p-2">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase">Click to<br>Add Logo</span>
+                        <div id="logoPlaceholder" class="text-center p-1">
+                            <span class="text-[8px] font-bold text-slate-400 uppercase">Logo</span>
                         </div>
                     </div>
-                    <input type="file" id="logoUpload" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer no-print" onchange="handleLogo(this)">
+                    <input type="file" id="logoUpload" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleLogo(this)">
                 </div>
                 
                 <div class="text-center md:text-left">
-                    <h1 class="text-5xl font-black navy-text tracking-tighter uppercase">RS AUTO EXPO LLC</h1>
-                    <p class="text-slate-500 text-xs font-bold uppercase tracking-widest mt-1">8180 Regent Parkway, Suite 118, Fort Mill, SC 29715</p>
-                    <p class="text-blue-600 text-sm font-bold mt-1">Rsautoexpo25@gmail.com | +1 407 300 8164</p>
+                    <h1 class="text-4xl font-black navy-text tracking-tighter uppercase">RS AUTO EXPO LLC</h1>
+                    <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">8180 Regent Parkway, Suite 118, Fort Mill, SC 29715</p>
+                    <p class="text-blue-600 text-xs font-bold mt-1">Rsautoexpo25@gmail.com | +1 407 300 8164</p>
                 </div>
             </div>
             
-            <div class="bg-blue-50/50 p-8 rounded-[1.5rem] border-l-[6px] border-[#001F3F] w-full md:w-96">
-                <p class="font-black text-slate-900 text-xl uppercase mb-1">MARKETING AND SALES SERVICES</p>
-                <p class="text-slate-600 text-[10px] font-bold uppercase leading-tight">C/1263 GBEDJROMEDE<br>COTONOU, Benin</p>
-                <p class="text-slate-700 text-sm font-bold mt-2">0022997979997</p>
-                <p class="text-slate-500 text-xs font-medium italic mt-1">Kamal.kassouf@hotmail.com</p>
-            </div>
-        </div>
-
-        <!-- BANK DETAILS -->
-        <div class="px-12 py-6 bg-slate-50 border-b border-slate-100 grid grid-cols-1 md:create-cols-2 gap-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
-                <div>
-                    <h4 class="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-3">Wire Transfer Instructions</h4>
-                    <div class="grid grid-cols-2 gap-y-2 text-xs">
-                        <span class="text-slate-400 font-bold uppercase">Account Name:</span> <span class="font-bold text-slate-800">RS AUTO EXPO LLC</span>
-                        <span class="text-slate-400 font-bold uppercase">Bank Name:</span> <span class="font-bold text-slate-800">TD BANK- U.S.A</span>
-                        <span class="text-slate-400 font-bold uppercase">Bank Address:</span> <span class="font-bold text-slate-800 text-[10px]">100 STONE VILLAGE, FORT MILL, SC, 29708</span>
-                    </div>
-                </div>
-                <div class="md:border-l md:pl-8 border-slate-200">
-                    <div class="grid grid-cols-2 gap-y-2 mt-6 text-xs">
-                        <span class="text-slate-400 font-bold uppercase">Account Number:</span> <span class="font-black text-slate-900 tracking-wider">4448347884</span>
-                        <span class="text-slate-400 font-bold uppercase">Routing Number:</span> <span class="font-black text-slate-900 tracking-wider">053902197</span>
-                        <span class="text-slate-400 font-bold uppercase">Swift Code:</span> <span class="font-black text-slate-900 tracking-wider">NRTHUS33XXX</span>
-                    </div>
-                </div>
+            <div class="bg-blue-50/50 p-6 rounded-2xl border-l-[4px] border-[#001F3F] w-full md:w-80">
+                <p class="font-black text-slate-900 text-sm uppercase mb-1">MARKETING AND SALES SERVICES</p>
+                <p class="text-slate-600 text-[9px] font-bold uppercase leading-tight">C/1263 GBEDJROMEDE, Benin</p>
+                <p class="text-slate-700 text-xs font-bold mt-1">0022997979997</p>
             </div>
         </div>
 
         <!-- SUMMARY DASHBOARD -->
-        <div class="p-8 bg-white grid grid-cols-1 md:grid-cols-3 gap-6 border-b border-slate-100">
-            <div class="bg-slate-50 p-8 rounded-3xl border border-slate-100">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Unpaid Inventory</p>
-                <p id="totalInv" class="text-4xl font-black text-slate-900">$0.00</p>
+        <div class="p-6 bg-white grid grid-cols-1 md:grid-cols-3 gap-4 border-b border-slate-100">
+            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Unpaid Inventory</p>
+                <p id="totalInv" class="text-2xl font-black text-slate-900">$0.00</p>
             </div>
-            <div class="bg-slate-50 p-8 rounded-3xl border border-slate-100">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Wires Received</p>
-                <p id="totalWire" class="text-4xl font-black text-blue-600">$0.00</p>
+            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Wires Received</p>
+                <p id="totalWire" class="text-2xl font-black text-blue-600">$0.00</p>
             </div>
-            <div class="navy-bg p-8 rounded-3xl shadow-xl transform md:scale-105 transition-all">
-                <p class="text-[10px] font-black text-blue-300 uppercase tracking-widest mb-1">Balance Due</p>
-                <p id="totalBal" class="text-4xl font-black text-white">$0.00</p>
+            <div class="navy-bg p-6 rounded-2xl shadow-lg">
+                <p class="text-[9px] font-black text-blue-300 uppercase tracking-widest mb-1">Balance Due</p>
+                <p id="totalBal" class="text-2xl font-black text-white">$0.00</p>
             </div>
         </div>
 
         <!-- TOOLBAR -->
-        <div class="px-8 py-4 bg-white border-b flex flex-wrap items-center gap-3 no-print">
-            <button onclick="addRow('cars')" class="bg-[#001F3F] text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-blue-900 shadow-lg">+ Add Vehicle</button>
-            <button onclick="addRow('wires')" class="bg-blue-600 text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-blue-700 shadow-lg">+ Add Wire</button>
+        <div class="px-6 py-4 bg-white border-b flex flex-wrap items-center gap-2 no-print">
+            <button onclick="addRow('cars')" class="bg-[#001F3F] text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-900 shadow-md">+ Add Vehicle</button>
+            <button onclick="addRow('wires')" class="bg-blue-600 text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-700 shadow-md">+ Add Wire</button>
             <div class="flex-grow"></div>
             <input type="file" id="importFile" class="hidden" onchange="importData(this)">
-            <button onclick="document.getElementById('importFile').click()" class="bg-white border px-4 py-3 rounded-2xl text-xs font-black text-slate-600 uppercase">📂 Import</button>
-            <button onclick="downloadBackup()" class="bg-slate-100 text-slate-600 px-4 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-200">💾 Save Backup</button>
-            <button onclick="window.print()" class="bg-[#001F3F] text-white px-8 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:opacity-90 shadow-lg">Print / Save PDF</button>
+            <button onclick="document.getElementById('importFile').click()" class="bg-white border px-3 py-2 rounded-xl text-[10px] font-black text-slate-600 uppercase">Import</button>
+            <button onclick="downloadBackup()" class="bg-slate-100 text-slate-600 px-3 py-2 rounded-xl text-[10px] font-black uppercase">Backup</button>
+            <button onclick="window.print()" class="bg-[#001F3F] text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase shadow-md">Print PDF</button>
         </div>
 
         <!-- CONTENT -->
-        <div class="p-8 md:p-12 space-y-16">
+        <div class="p-6 md:p-8 space-y-12">
             <section>
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="h-8 w-1 navy-bg rounded-full"></div>
-                    <h3 class="text-sm font-black text-slate-900 uppercase tracking-[0.3em]">Board A: Vehicle Inventory</h3>
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="h-6 w-1 navy-bg rounded-full"></div>
+                    <h3 class="text-[11px] font-black text-slate-900 uppercase tracking-widest">Board A: Vehicle Inventory</h3>
                 </div>
-                <div class="overflow-x-auto rounded-2xl border border-slate-100">
-                    <table class="w-full text-left table-fixed md:table-auto">
+                <div class="table-container rounded-xl border border-slate-100">
+                    <table class="w-full text-left">
                         <thead>
-                            <tr class="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50/50">
-                                <th class="p-4 pl-6 w-16">Year</th>
-                                <th class="p-4 w-48">Make / Model</th>
-                                <th class="p-4 w-56">VIN</th>
-                                <th class="p-4 w-32">Price ($)</th>
-                                <th class="p-4 w-28">Status</th>
-                                <th class="p-4 w-36 text-right pr-6">Remaining</th>
-                                <th class="p-4 w-10 no-print"></th>
+                            <tr class="text-[9px] font-black text-slate-400 uppercase tracking-widest bg-slate-50/50">
+                                <th class="p-3 w-14">Year</th>
+                                <th class="p-3 w-1/4">Model</th>
+                                <th class="p-3 w-1/4">VIN</th>
+                                <th class="p-3 w-20 text-right">Price</th>
+                                <th class="p-3 w-20 text-center">Status</th>
+                                <th class="p-3 w-24 text-right">Remaining</th>
+                                <th class="p-3 w-8 no-print"></th>
                             </tr>
                         </thead>
-                        <tbody id="carTable" class="divide-y divide-slate-50"></tbody>
+                        <tbody id="carTable" class="divide-y divide-slate-50 text-[11px]"></tbody>
                     </table>
                 </div>
             </section>
 
-            <section class="max-w-4xl">
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="h-8 w-1 bg-blue-500 rounded-full"></div>
-                    <h3 class="text-sm font-black text-slate-900 uppercase tracking-[0.3em]">Board B: Wire Transfers</h3>
+            <section class="max-w-2xl">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="h-6 w-1 bg-blue-500 rounded-full"></div>
+                    <h3 class="text-[11px] font-black text-slate-900 uppercase tracking-widest">Board B: Wire Transfers</h3>
                 </div>
-                <div class="overflow-x-auto rounded-2xl border border-slate-100 shadow-sm">
+                <div class="table-container rounded-xl border border-slate-100 shadow-sm">
                     <table class="w-full text-left">
-                        <thead class="bg-blue-50 text-[10px] font-black text-blue-700 uppercase tracking-widest">
+                        <thead class="bg-blue-50 text-[9px] font-black text-blue-700 uppercase tracking-widest">
                             <tr>
-                                <th class="p-5 pl-6">Date</th>
-                                <th class="p-5">Reference / Notes</th>
-                                <th class="p-5 w-48 text-right pr-6">Amount ($)</th>
-                                <th class="p-5 w-10 no-print"></th>
+                                <th class="p-3 w-28">Date</th>
+                                <th class="p-3">Reference</th>
+                                <th class="p-3 w-32 text-right">Amount</th>
+                                <th class="p-3 w-8 no-print"></th>
                             </tr>
                         </thead>
-                        <tbody id="wireTable" class="divide-y divide-slate-50"></tbody>
+                        <tbody id="wireTable" class="divide-y divide-slate-50 text-[11px]"></tbody>
                     </table>
                 </div>
             </section>
         </div>
 
-        <div class="p-8 bg-slate-50 text-center border-t border-slate-100">
-            <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em]">RS AUTO EXPO LLC</p>
+        <div class="p-6 bg-slate-50 text-center border-t border-slate-100">
+            <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">RS AUTO EXPO LLC - CONFIDENTIAL</p>
         </div>
     </div>
 
     <script>
-        const storageKey = 'rs_marketing_benin_ledger_v1';
+        const storageKey = 'rs_marketing_benin_ledger_v2';
         const curFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 
         let state = JSON.parse(localStorage.getItem(storageKey)) || {
@@ -233,11 +219,8 @@
 
         function updateField(type, index, key, val, el) {
             state[type][index][key] = (key === 'price' || key === 'amount') ? parseFloat(val) || 0 : val;
-            
-            // Mirror to print text layer
             const printSpan = el.parentElement.querySelector('.print-text');
             if(printSpan) printSpan.innerText = val;
-            
             saveState();
             calculateTotals();
         }
@@ -261,7 +244,7 @@
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
             const dl = document.createElement('a');
             dl.setAttribute("href", dataStr);
-            dl.setAttribute("download", "RS_MARKETING_BENIN_Backup.json");
+            dl.setAttribute("download", "RS_BENIN_Backup.json");
             dl.click();
         }
         
@@ -292,19 +275,19 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition-colors";
                 tr.innerHTML = `
-                    <td class="p-4 pl-6"><span class="print-text">${c.year}</span><input type="text" value="${c.year}" oninput="updateField('cars',${i},'year',this.value, this)" placeholder="2024" class="font-bold text-slate-700"></td>
-                    <td class="p-4"><span class="print-text">${c.model}</span><input type="text" value="${c.model}" oninput="updateField('cars',${i},'model',this.value, this)" placeholder="Make / Model" class="font-bold text-slate-700"></td>
-                    <td class="p-4"><span class="print-text">${c.vin}</span><input type="text" value="${c.vin}" oninput="updateField('cars',${i},'vin',this.value, this)" placeholder="VIN #" class="font-medium text-slate-500 uppercase text-xs tracking-wider"></td>
-                    <td class="p-4"><span class="print-text">${c.price}</span><input type="number" value="${c.price}" oninput="updateField('cars',${i},'price',this.value, this)" class="font-black text-slate-900"></td>
-                    <td class="p-4">
-                        <span class="print-text font-black ${c.status === 'PAID' ? 'text-green-600' : 'text-red-600'}">${c.status}</span>
-                        <select onchange="updateField('cars',${i},'status',this.value, this); fullRender();" class="text-[10px] font-black p-2 rounded-lg outline-none cursor-pointer ${c.status === 'PAID' ? 'status-paid' : 'status-unpaid'}">
+                    <td class="p-3"><span class="print-text">${c.year}</span><input type="text" value="${c.year}" oninput="updateField('cars',${i},'year',this.value, this)" placeholder="2024" class="font-bold"></td>
+                    <td class="p-3"><span class="print-text">${c.model}</span><input type="text" value="${c.model}" oninput="updateField('cars',${i},'model',this.value, this)" placeholder="Model" class="font-bold truncate"></td>
+                    <td class="p-3"><span class="print-text text-[9px] break-all leading-tight">${c.vin}</span><input type="text" value="${c.vin}" oninput="updateField('cars',${i},'vin',this.value, this)" placeholder="VIN" class="uppercase text-[9px] tracking-tight"></td>
+                    <td class="p-3 text-right"><span class="print-text">${c.price}</span><input type="number" value="${c.price}" oninput="updateField('cars',${i},'price',this.value, this)" class="font-bold text-right"></td>
+                    <td class="p-3 text-center">
+                        <span class="print-text text-[8px] font-black ${c.status === 'PAID' ? 'text-green-600' : 'text-red-600'}">${c.status}</span>
+                        <select onchange="updateField('cars',${i},'status',this.value, this); fullRender();" class="text-[8px] font-black p-1 rounded-lg outline-none cursor-pointer ${c.status === 'PAID' ? 'status-paid' : 'status-unpaid'}">
                             <option value="UNPAID" ${c.status === 'UNPAID' ? 'selected' : ''}>UNPAID</option>
                             <option value="PAID" ${c.status === 'PAID' ? 'selected' : ''}>PAID</option>
                         </select>
                     </td>
-                    <td class="p-4 text-right pr-6 font-black text-xl text-slate-900 row-rem">${curFormatter.format(c.status === 'PAID' ? 0 : c.price)}</td>
-                    <td class="p-4 no-print text-center"><button onclick="removeRow('cars',${i})" class="text-slate-300 hover:text-red-500">✕</button></td>
+                    <td class="p-3 text-right font-black row-rem">${curFormatter.format(c.status === 'PAID' ? 0 : c.price)}</td>
+                    <td class="p-3 no-print text-center"><button onclick="removeRow('cars',${i})" class="text-slate-200 hover:text-red-500 text-[9px]">✕</button></td>
                 `;
                 cBody.appendChild(tr);
             });
@@ -313,10 +296,10 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-blue-50/50 transition-colors";
                 tr.innerHTML = `
-                    <td class="p-5 pl-6"><span class="print-text">${w.date}</span><input type="date" value="${w.date}" oninput="updateField('wires',${i},'date',this.value, this)" class="text-xs font-bold text-slate-500"></td>
-                    <td class="p-5"><span class="print-text">${w.ref}</span><input type="text" value="${w.ref}" oninput="updateField('wires',${i},'ref',this.value, this)" placeholder="Reference" class="font-medium text-slate-700"></td>
-                    <td class="p-5 text-right pr-6 font-black text-blue-600 text-xl"><span class="print-text text-right">${w.amount}</span><input type="number" value="${w.amount}" oninput="updateField('wires',${i},'amount',this.value, this)" class="text-right"></td>
-                    <td class="p-5 no-print text-center"><button onclick="removeRow('wires',${i})" class="text-slate-300 hover:text-red-500">✕</button></td>
+                    <td class="p-3"><span class="print-text">${w.date}</span><input type="date" value="${w.date}" oninput="updateField('wires',${i},'date',this.value, this)" class="text-[10px]"></td>
+                    <td class="p-3"><span class="print-text">${w.ref}</span><input type="text" value="${w.ref}" oninput="updateField('wires',${i},'ref',this.value, this)" class="font-medium"></td>
+                    <td class="p-3 text-right font-black text-blue-600"><span class="print-text text-right">${w.amount}</span><input type="number" value="${w.amount}" oninput="updateField('wires',${i},'amount',this.value, this)" class="text-right"></td>
+                    <td class="p-3 no-print text-center"><button onclick="removeRow('wires',${i})" class="text-slate-200 hover:text-red-500 text-[9px]">✕</button></td>
                 `;
                 wBody.appendChild(tr);
             });
