@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RS AUTO EXPO LLC | Marketing & Sales Ledger</title>
+    <title>RS AUTO EXPO LLC | Marketing & Sales Services Ledger</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
@@ -50,10 +50,10 @@
                 </div>
             </div>
             
-            <!-- CUSTOMER INFO -->
+            <!-- CUSTOMER INFO (Updated with your provided details) -->
             <div class="bg-blue-50/50 p-8 rounded-[1.5rem] border-l-[6px] border-[#001F3F] w-full md:w-96">
                 <p class="font-black text-slate-900 text-xl uppercase mb-1">MARKETING AND SALES SERVICES</p>
-                <p class="text-slate-600 text-xs font-bold uppercase">C/1263 GBEDJROMEDE, COTONOU, Benin</p>
+                <p class="text-slate-600 text-[10px] font-bold uppercase leading-tight">C/1263 GBEDJROMEDE<br>COTONOU, Benin</p>
                 <p class="text-slate-700 text-sm font-bold mt-2">0022997979997</p>
                 <p class="text-slate-500 text-xs font-medium italic mt-1">Kamal.kassouf@hotmail.com</p>
             </div>
@@ -159,9 +159,9 @@
     </div>
 
     <script>
-        // Unique storage key for this specific customer
-        const storageKey = 'rs_autoexpo_benin_v1';
-        
+        // Unique storage key for this specific client
+        const storageKey = 'rs_marketing_benin_ledger_v1';
+
         let state = JSON.parse(localStorage.getItem(storageKey)) || {
             cars: [{ year: '', model: '', vin: '', price: 0, status: 'UNPAID' }],
             wires: [{ date: '', ref: 'Wire Transfer', amount: 0 }],
@@ -206,7 +206,7 @@
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
             const dl = document.createElement('a');
             dl.setAttribute("href", dataStr);
-            dl.setAttribute("download", "RS_AUTO_EXPO_Benin_Backup.json");
+            dl.setAttribute("download", "RS_MARKETING_BENIN_Backup.json");
             dl.click();
         }
 
