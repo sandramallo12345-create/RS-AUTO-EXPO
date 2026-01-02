@@ -19,16 +19,15 @@
             body { background: white !important; padding: 0 !important; }
             .container-box { border: none !important; box-shadow: none !important; margin: 0 !important; max-width: 100% !important; width: 100% !important; }
             
-            /* Hide inputs and show the text layer for PDF */
             input, select { display: none !important; }
             
             .print-text { 
                 display: block !important; 
                 min-height: 1.2em;
                 overflow: visible;
-                font-size: 9pt !important;
+                font-size: 8pt !important;
                 color: #000 !important;
-                word-break: break-all; /* Prevent VIN from pushing table width */
+                word-break: break-all;
             }
 
             .status-paid { background-color: #dcfce7 !important; color: #15803d !important; -webkit-print-color-adjust: exact; }
@@ -46,14 +45,13 @@
         input:focus { border-bottom: 1px solid #cbd5e1; }
         input::placeholder { color: #cbd5e1; font-weight: 400; font-size: 0.75rem; }
 
-        /* Force table containment */
         .table-container {
             width: 100%;
-            overflow-x: hidden; /* No horizontal scroll */
+            overflow-x: hidden;
         }
         table {
             width: 100%;
-            table-layout: fixed; /* Ensures column widths are strictly obeyed */
+            table-layout: fixed;
         }
     </style>
 </head>
@@ -62,7 +60,7 @@
     <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-[1.5rem] overflow-hidden border border-slate-200 container-box">
         
         <!-- HEADER SECTION -->
-        <div class="p-6 md:p-10 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start gap-6">
+        <div class="p-6 md:p-8 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start gap-6">
             <div class="flex flex-col md:flex-row items-center gap-6">
                 <div class="relative group no-print">
                     <div class="bg-white p-2 rounded-xl shadow-sm border border-slate-100 w-24 h-24 flex items-center justify-center overflow-hidden">
@@ -75,16 +73,50 @@
                 </div>
                 
                 <div class="text-center md:text-left">
-                    <h1 class="text-4xl font-black navy-text tracking-tighter uppercase">RS AUTO EXPO LLC</h1>
-                    <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">8180 Regent Parkway, Suite 118, Fort Mill, SC 29715</p>
+                    <h1 class="text-4xl font-black navy-text tracking-tighter uppercase leading-none">RS AUTO EXPO LLC</h1>
+                    <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-2">8180 Regent Parkway, Suite 118, Fort Mill, SC 29715</p>
                     <p class="text-blue-600 text-xs font-bold mt-1">Rsautoexpo25@gmail.com | +1 407 300 8164</p>
+                    
+                    <div class="mt-4 pt-4 border-t border-slate-100 hidden md:block">
+                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Billing To:</p>
+                        <p class="font-bold text-slate-900 text-sm uppercase">MARKETING AND SALES SERVICES</p>
+                        <p class="text-slate-500 text-[10px]">C/1263 GBEDJROMEDE, Benin | 0022997979997</p>
+                    </div>
                 </div>
             </div>
             
-            <div class="bg-blue-50/50 p-6 rounded-2xl border-l-[4px] border-[#001F3F] w-full md:w-80">
-                <p class="font-black text-slate-900 text-sm uppercase mb-1">MARKETING AND SALES SERVICES</p>
-                <p class="text-slate-600 text-[9px] font-bold uppercase leading-tight">C/1263 GBEDJROMEDE, Benin</p>
-                <p class="text-slate-700 text-xs font-bold mt-1">0022997979997</p>
+            <!-- TD BANK PAYMENT INFO CARD -->
+            <div class="bg-blue-50/80 p-5 rounded-2xl border-l-[4px] border-[#001F3F] w-full md:w-96 shadow-sm">
+                <p class="text-[9px] font-black text-blue-700 uppercase tracking-widest mb-2 flex items-center gap-2">
+                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.82v-1.91c-1.57-.33-2.82-1.33-2.91-2.91h1.91c.09.74.65 1.25 1.57 1.25.92 0 1.48-.46 1.48-1.25 0-.74-.46-1.11-1.85-1.48-1.85-.46-3.15-1.11-3.15-2.96 0-1.48 1.11-2.59 2.59-2.96V6h2.82v1.91c1.3.28 2.31 1.02 2.59 2.41h-1.85c-.28-.74-.65-1.02-1.39-1.02-.92 0-1.3.46-1.3 1.11 0 .74.46 1.02 1.85 1.39 1.85.46 3.15 1.2 3.15 3.15-.01 1.67-1.12 2.78-2.6 3.14z"/></svg>
+                    Official Wire Instructions
+                </p>
+                <div class="space-y-1.5">
+                    <div class="flex justify-between border-b border-blue-100 pb-1">
+                        <span class="text-[10px] text-blue-900/60 uppercase font-bold">Bank Name</span>
+                        <span class="text-[10px] font-bold text-slate-900">TD BANK - U.S.A</span>
+                    </div>
+                    <div class="flex justify-between border-b border-blue-100 pb-1">
+                        <span class="text-[10px] text-blue-900/60 uppercase font-bold">Account Name</span>
+                        <span class="text-[10px] font-bold text-slate-900">RS AUTOEXPO LLC</span>
+                    </div>
+                    <div class="flex justify-between border-b border-blue-100 pb-1">
+                        <span class="text-[10px] text-blue-900/60 uppercase font-bold">Account #</span>
+                        <span class="text-[10px] font-bold text-slate-900 tracking-wider">4448347884</span>
+                    </div>
+                    <div class="flex justify-between border-b border-blue-100 pb-1">
+                        <span class="text-[10px] text-blue-900/60 uppercase font-bold">Routing #</span>
+                        <span class="text-[10px] font-bold text-slate-900 tracking-wider">053902197</span>
+                    </div>
+                    <div class="flex justify-between border-b border-blue-100 pb-1">
+                        <span class="text-[10px] text-blue-900/60 uppercase font-bold">SWIFT Code</span>
+                        <span class="text-[10px] font-bold text-blue-600 tracking-wider">NRTHUS33XXX</span>
+                    </div>
+                    <div class="pt-1">
+                        <p class="text-[8px] text-blue-900/40 uppercase font-black leading-none">Bank Address</p>
+                        <p class="text-[9px] font-medium text-slate-600 italic">100 Stone Village, Fort Mill, SC, 29708</p>
+                    </div>
+                </div>
             </div>
         </div>
 
