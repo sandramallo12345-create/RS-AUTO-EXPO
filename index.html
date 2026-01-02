@@ -11,7 +11,7 @@
         .navy-bg { background-color: #001F3F; }
         .navy-text { color: #001F3F; }
         
-        /* Print Fixes */
+        /* Print Adjustments */
         .print-text { display: none; }
         
         @media print {
@@ -19,23 +19,29 @@
             body { background: white !important; padding: 0 !important; }
             .container-box { border: none !important; box-shadow: none !important; margin: 0 !important; max-width: 100% !important; width: 100% !important; }
             
+            /* Ensure Billing To is visible on print */
+            .billing-info { display: block !important; }
+            
             input, select { display: none !important; }
             
             .print-text { 
                 display: block !important; 
                 min-height: 1.2em;
                 overflow: visible;
-                font-size: 8pt !important;
+                font-size: 9pt !important;
                 color: #000 !important;
                 word-break: break-all;
             }
 
-            .status-paid { background-color: #dcfce7 !important; color: #15803d !important; -webkit-print-color-adjust: exact; }
-            .status-unpaid { background-color: #fee2e2 !important; color: #b91c1c !important; -webkit-print-color-adjust: exact; }
-            .navy-bg { background-color: #001F3F !important; -webkit-print-color-adjust: exact; }
+            /* Maintain background colors in PDF */
+            .status-paid { background-color: #dcfce7 !important; color: #15803d !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .status-unpaid { background-color: #fee2e2 !important; color: #b91c1c !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .navy-bg { background-color: #001F3F !important; color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .bg-blue-50\/80 { background-color: #eff6ff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .bg-slate-50 { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             
-            table { table-layout: auto !important; width: 100% !important; }
-            th, td { padding: 4px !important; }
+            table { table-layout: auto !important; width: 100% !important; border-collapse: collapse; }
+            th, td { padding: 6px !important; border-bottom: 1px solid #e2e8f0 !important; }
         }
 
         .status-paid { background-color: #dcfce7; color: #15803d; font-weight: 900; }
@@ -45,14 +51,8 @@
         input:focus { border-bottom: 1px solid #cbd5e1; }
         input::placeholder { color: #cbd5e1; font-weight: 400; font-size: 0.75rem; }
 
-        .table-container {
-            width: 100%;
-            overflow-x: hidden;
-        }
-        table {
-            width: 100%;
-            table-layout: fixed;
-        }
+        .table-container { width: 100%; overflow-x: hidden; }
+        table { width: 100%; table-layout: fixed; }
     </style>
 </head>
 <body class="p-2 md:p-6">
@@ -77,7 +77,8 @@
                     <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-2">8180 Regent Parkway, Suite 118, Fort Mill, SC 29715</p>
                     <p class="text-blue-600 text-xs font-bold mt-1">Rsautoexpo25@gmail.com | +1 407 300 8164</p>
                     
-                    <div class="mt-4 pt-4 border-t border-slate-100 hidden md:block">
+                    <!-- Updated Billing Info to be visible in print -->
+                    <div class="mt-4 pt-4 border-t border-slate-100 billing-info">
                         <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Billing To:</p>
                         <p class="font-bold text-slate-900 text-sm uppercase">MARKETING AND SALES SERVICES</p>
                         <p class="text-slate-500 text-[10px]">C/1263 GBEDJROMEDE, Benin | 0022997979997</p>
